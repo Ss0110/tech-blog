@@ -1,0 +1,42 @@
+<!-- views/layout.handlebars -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech Blog</title>
+  <!-- Add your CSS and other header elements here -->
+  <link rel="stylesheet" href="../public/css/styles.css">
+</head>
+<body>
+  <!-- Header section -->
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        {{#if loggedIn}}
+        <li><a href="/logout">Logout</a></li>
+        {{else}}
+        <li><a href="/login">Login</a></li>
+        {{/if}}
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Content section -->
+  <main>
+    {{{body}}}
+  </main>
+
+  <!-- Footer section -->
+  <footer>
+    <p>&copy; 2023 Tech Blog. All rights reserved.</p>
+  </footer>
+
+
+ 
+  <script src="../public/js/main.js"></script>
+</body>
+</html>

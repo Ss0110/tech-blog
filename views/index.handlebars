@@ -1,0 +1,12 @@
+<!-- views/index.handlebars -->
+
+{{#each posts}}
+<div class="post">
+  <h2>{{Tech Blog}}</h2>
+  <p>{{formatDate createdAt}}</p>
+  <p>{{summary}}</p>
+  <a href="/post/{{id}}">Read More</a>
+</div>
+{{else}}
+<p>No posts to display</p>
+{{/each}}
