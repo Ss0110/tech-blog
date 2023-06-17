@@ -1,36 +1,65 @@
-const router = require("express").Router();
-const { User } = require("../models");
+const { Model, DataTypes } = require("sequelize");
+const bcrypt = require("bcrypt");
+const sequelize = require("../config/connection");
 
-// User registration route
-router.post("/register", async (req, res) => {
-  try {
-    const user = await User.create(req.body);
-    res.status(201).json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to register user" });
+// create our User model
+class User extends Model {
+  // set up method to run on instance data (per user) to check password
+  checkPassword(loginPw) {
+    return bcrypt.compareSync(loginPw, this.password);
   }
-});
+}
 
-// User login route
-router.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ where: { email } });
+// create fields/columns for User model
+User.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isEmail: true,
+      },
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [4],
+      },
+    },
+  },
+  {
+    hooks: {
+      // set up beforeCreate lifecycle "hook" functionality
+      async beforeCreate(newUserData) {
+        newUserData.password = await bcrypt.hash(newUserData.password, 10);
+        return newUserData;
+      },
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    if (user.password !== password) {
-      return res.status(401).json({ message: "Incorrect password" });
-    }
-
-    res.status(200).json({ message: "Login successful" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to login" });
+      async beforeUpdate(updatedUserData) {
+        updatedUserData.password = await bcrypt.hash(
+          updatedUserData.password,
+          10
+        );
+        return updatedUserData;
+      },
+    },
+    sequelize,
+    timestamps: false,
+    freezeTableName: true,
+    underscored: true,
+    modelName: "user",
   }
-});
+);
 
-module.exports = router;
+module.exports = User;

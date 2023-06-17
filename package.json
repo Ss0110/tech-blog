@@ -1,0 +1,38 @@
+{
+    "name": "tech-blog",
+    "version": "1.0.0",
+    "description": "A CMS-style blog site for tech developers",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js",
+      "watch": "nodemon server.js"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Ss0110/tech-blog"
+    },
+    "keywords": [
+      "tech",
+      "blog",
+      "CMS",
+      "MVC",
+      "Handlebars",
+      "Sequelize",
+      "express-session"
+    ],
+    "author": "Saray Sanchez",
+    "license": "MIT",
+    "dependencies": {
+      "bcrypt": "^5.0.1",
+      "dotenv": "^10.0.0",
+      "express": "^4.17.1",
+      "express-handlebars": "^5.3.3",
+      "express-session": "^1.17.2",
+      "mysql2": "^2.3.0",
+      "sequelize": "^6.6.2"
+    },
+    "devDependencies": {
+      "nodemon": "^2.0.12"
+    }
+  }
+  

@@ -1,41 +1,35 @@
-// Import necessary dependencies
+const path = require("path");
 const express = require("express");
 const session = require("express-session");
 const exphbs = require("express-handlebars");
 
-// Configure the port
+const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Create an instance of the Express.js app
-const app = express();
+const sequelize = require("./config/connection");
 
-// Configure middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
+const sess = {
+  secret: "Super secret secret",
+  cookie: {},
+  resave: false,
+  saveUninitialized: true,
+};
 
-// Configure session middleware
-app.use(
-  session({
-    secret: "your-secret-key",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+app.use(session(sess));
 
-// Configure templating engine
-app.engine("handlebars", exphbs());
+const helpers = require("./utils/helper");
+
+const hbs = exphbs.create({ helpers });
+
+app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
 
-// Set up route handlers
-app.use("/", require("./routes/homeRoutes"));
-app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/posts", require("./routes/postRoutes"));
-app.use("/api/comments", require("./routes/commentRoutes"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
 
-// Sync the database and start the server
+app.use(require("./controllers/index"));
+
 sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+  app.listen(PORT, () => console.log("Now listening"));
 });
